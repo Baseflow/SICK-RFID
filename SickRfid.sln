@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SickRfid", "SickRfid\SickRfid.csproj", "{9C7A4E38-51D3-4F73-A428-27D1A0B9A9B8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SickRfid.Tests", "SickRfid.Tests\SickRfid.Tests.csproj", "{A1EDF9BF-CA35-4733-8857-54585EC29A9B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SickRfidTestClient", "SickRfidTestClient\SickRfidTestClient.csproj", "{616A2579-E1F3-4029-9D9F-AD26776BFC9D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9C7A4E38-51D3-4F73-A428-27D1A0B9A9B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C7A4E38-51D3-4F73-A428-27D1A0B9A9B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C7A4E38-51D3-4F73-A428-27D1A0B9A9B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C7A4E38-51D3-4F73-A428-27D1A0B9A9B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1EDF9BF-CA35-4733-8857-54585EC29A9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1EDF9BF-CA35-4733-8857-54585EC29A9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1EDF9BF-CA35-4733-8857-54585EC29A9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1EDF9BF-CA35-4733-8857-54585EC29A9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{616A2579-E1F3-4029-9D9F-AD26776BFC9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{616A2579-E1F3-4029-9D9F-AD26776BFC9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{616A2579-E1F3-4029-9D9F-AD26776BFC9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{616A2579-E1F3-4029-9D9F-AD26776BFC9D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
