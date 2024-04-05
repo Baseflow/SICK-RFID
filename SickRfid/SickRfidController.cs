@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 
 namespace SickRfid;
 
@@ -50,6 +51,20 @@ public class ConnectedSickRfidController: SickRfidControllerState<Connected>, ID
         await _socket.SendAsync(Commands.START_REQUEST_DATA, SocketFlags.None, cancellationToken).ConfigureAwait(true);
     }
     
+    public async Task ListenAsync(CancellationToken cancellationToken = default)
+    {
+        var buffer = new byte[1024];
+
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            var result = await _socket.ReceiveAsync(buffer, SocketFlags.None, cancellationToken);
+
+            if (result <= 0) continue;
+            var message = Encoding.ASCII.GetString(buffer, 0, result);
+            Console.WriteLine($"Received: {message}");
+        }
+    }
+    
     public async Task StopAsync(CancellationToken cancellationToken = default)
     {
         await _socket.SendAsync(Commands.STOP_REQUEST_DATA, SocketFlags.None, cancellationToken).ConfigureAwait(true);
@@ -58,17 +73,16 @@ public class ConnectedSickRfidController: SickRfidControllerState<Connected>, ID
     public void Dispose()
     {
         if (_socket == null)
-        {
+        { 
             return;
         }
+        
         _socket.Disconnect(true);
         _socket.Close();
         _socket.Dispose();
     }
 }
 
-// Create a builder pattern for the SickRfidController class
-// It should at least have parameters for the IP address and port of the RFID reader
 public class SickRfidControllerBuilder
 {
     private readonly IPAddress _ipAddress;
