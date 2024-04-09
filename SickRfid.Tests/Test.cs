@@ -38,4 +38,37 @@ public class Test
         await Task.Delay(TimeSpan.FromSeconds(2));
         await connectedController.StopAsync();
     }
+    
+    [Fact]
+    public async Task TestListenAsync()
+    {
+        var ipAddress = "192.168.0.149";
+        var port = 2112;
+
+        var controller = new SickRfidControllerBuilder(IPAddress.Parse(ipAddress))
+            .WithPort(port)
+            .Build();
+        Assert.Equal(typeof(DisconnectedSickRfidController), controller.GetType());
+        
+        using var connectedController = await controller.ConnectAsync();
+        Assert.Equal(typeof(ConnectedSickRfidController), connectedController.GetType());
+        
+        await connectedController.StartAsync();
+        await Task.Delay(TimeSpan.FromSeconds(2));
+
+        var cts = new CancellationTokenSource();
+        await connectedController.ListenAsync((message) => OnMessageReceived(message, cts), cts.Token);
+
+        await connectedController.StopAsync();
+    }
+    
+    private async Task OnMessageReceived(string message, CancellationTokenSource cts)
+    {
+        var expectedMessage = "Your expected message here";
+        Console.WriteLine(message);
+        // Assert.Equal(expectedMessage, message);
+        // cts.Cancel();
+        await Task.CompletedTask;
+    }
+    
 }

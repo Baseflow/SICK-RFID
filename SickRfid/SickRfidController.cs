@@ -51,18 +51,39 @@ public class ConnectedSickRfidController: SickRfidControllerState<Connected>, ID
         await _socket.SendAsync(Commands.START_REQUEST_DATA, SocketFlags.None, cancellationToken).ConfigureAwait(true);
     }
     
-    public async Task ListenAsync(CancellationToken cancellationToken = default)
+    public async Task ListenAsync(Func<string, Task> onMessageReceived, CancellationToken cancellationToken = default)
     {
         var buffer = new byte[1024];
 
         while (!cancellationToken.IsCancellationRequested)
         {
-            var result = await _socket.ReceiveAsync(buffer, SocketFlags.None, cancellationToken);
+            while (_socket.Available > 0)
+            {
+                var result = await _socket.ReceiveAsync(buffer, SocketFlags.None, cancellationToken);
 
-            if (result <= 0) continue;
-            var message = Encoding.ASCII.GetString(buffer, 0, result);
-            Console.WriteLine($"Received: {message}");
+                if (result <= 0) continue;
+
+                var messages = Encoding.ASCII.GetString(buffer, 0, result).Split("\u0003");
+
+                foreach (var message in messages)
+                {
+                    if (!string.IsNullOrEmpty(message))
+                    {
+                        await onMessageReceived(message);
+                    }
+                }
+            }
         }
+
+        //
+        // while (!cancellationToken.IsCancellationRequested)
+        // {
+        //     var result = await _socket.ReceiveAsync(buffer, SocketFlags.None, cancellationToken);
+        //
+        //     if (result <= 0) continue;
+        //     var message = Encoding.ASCII.GetString(buffer, 0, result);
+        //     await onMessageReceived(message);
+        // }
     }
     
     public async Task StopAsync(CancellationToken cancellationToken = default)
