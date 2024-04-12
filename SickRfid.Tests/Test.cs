@@ -1,4 +1,6 @@
 using System.Net;
+using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
+using Xunit.Abstractions;
 
 namespace SickRfid.Tests;
 
@@ -6,6 +8,13 @@ using Xunit;
 
 public class Test
 {
+    private readonly ITestOutputHelper _testOutputHelper;
+
+    public Test(ITestOutputHelper testOutputHelper)
+    {
+        _testOutputHelper = testOutputHelper;
+    }
+
     [Fact]
     public void TestStartCommandBytes()
     {
@@ -52,23 +61,17 @@ public class Test
         
         using var connectedController = await controller.ConnectAsync();
         Assert.Equal(typeof(ConnectedSickRfidController), connectedController.GetType());
-        
-        await connectedController.StartAsync();
-        await Task.Delay(TimeSpan.FromSeconds(2));
-
-        var cts = new CancellationTokenSource();
-        await connectedController.ListenAsync((message) => OnMessageReceived(message, cts), cts.Token);
-
-        await connectedController.StopAsync();
+      
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+        try
+        {
+            var message = await connectedController.ScanRfidAsync(cts.Token);
+            _testOutputHelper.WriteLine(message);
+        }
+        catch (OperationCanceledException)
+        {
+            _testOutputHelper.WriteLine("Did not receive a barcode within 10 seconds....");
+            throw;
+        }
     }
-    
-    private async Task OnMessageReceived(string message, CancellationTokenSource cts)
-    {
-        var expectedMessage = "Your expected message here";
-        Console.WriteLine(message);
-        // Assert.Equal(expectedMessage, message);
-        // cts.Cancel();
-        await Task.CompletedTask;
-    }
-    
 }
