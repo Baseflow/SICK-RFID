@@ -47,7 +47,7 @@ public class Test :  IClassFixture<SickRfidScannerMockFixture>
         Assert.Equal(typeof(ConnectedSickRfidController), connectedController.GetType());
         
         await connectedController.StartAsync();
-        await Task.Delay(TimeSpan.FromSeconds(10));
+        await Task.Delay(TimeSpan.FromSeconds(1));
         await connectedController.StopAsync();
     }
     
