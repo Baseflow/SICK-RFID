@@ -1,20 +1,26 @@
 using System.Net;
-using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using Xunit.Abstractions;
 
 namespace SickRfid.Tests;
 
 using Xunit;
 
-public class Test
+public class Test :  IClassFixture<SickRfidScannerMockFixture>
 {
     private readonly ITestOutputHelper _testOutputHelper;
+    private readonly SickRfidScannerMock _rfidScanner;
 
-    public Test(ITestOutputHelper testOutputHelper)
+    private const string IpAddress = "127.0.0.1";
+    private const int Port = 2112;
+    
+    private const string Barcode = "E8E0FE73-4CC0-4710-BF57-941EA523F904";
+    
+    public Test(ITestOutputHelper testOutputHelper, SickRfidScannerMockFixture mockFixture)
     {
         _testOutputHelper = testOutputHelper;
+        _rfidScanner = mockFixture.Mock;
     }
-
+    
     [Fact]
     public void TestStartCommandBytes()
     {
@@ -32,11 +38,8 @@ public class Test
     [Fact]
     public async Task ConnectAsync()
     {
-        var ipAddress = "192.168.0.149";
-        var port = 2112;
-
-        var controller = new SickRfidControllerBuilder(IPAddress.Parse(ipAddress))
-            .WithPort(port)
+        var controller = new SickRfidControllerBuilder(IPAddress.Parse(IpAddress))
+            .WithPort(Port)
             .Build();
         Assert.Equal(typeof(DisconnectedSickRfidController), controller.GetType());
 
@@ -44,18 +47,15 @@ public class Test
         Assert.Equal(typeof(ConnectedSickRfidController), connectedController.GetType());
         
         await connectedController.StartAsync();
-        await Task.Delay(TimeSpan.FromSeconds(2));
+        await Task.Delay(TimeSpan.FromSeconds(10));
         await connectedController.StopAsync();
     }
     
     [Fact]
     public async Task TestListenAsync()
     {
-        var ipAddress = "192.168.0.149";
-        var port = 2112;
-
-        var controller = new SickRfidControllerBuilder(IPAddress.Parse(ipAddress))
-            .WithPort(port)
+        var controller = new SickRfidControllerBuilder(IPAddress.Parse(IpAddress))
+            .WithPort(Port)
             .Build();
         Assert.Equal(typeof(DisconnectedSickRfidController), controller.GetType());
         
@@ -65,13 +65,38 @@ public class Test
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
         try
         {
+            _ = ReadBarcodeWithDelay(TimeSpan.FromSeconds(2), cts.Token);
             var message = await connectedController.ScanRfidAsync(cts.Token);
             _testOutputHelper.WriteLine(message);
+            Assert.Equal(Barcode, message);
         }
         catch (OperationCanceledException)
         {
             _testOutputHelper.WriteLine("Did not receive a barcode within 10 seconds....");
             throw;
         }
+    }
+
+    // Sets a delay before reading barcode with the mock.
+    private Task<Task> ReadBarcodeWithDelay(TimeSpan delay, CancellationToken cancellationToken = default)
+    {
+        return Task.Factory.StartNew(async () =>
+        {
+            await Task.Delay(delay, CancellationToken.None);
+            _testOutputHelper.WriteLine("Sending barcode");
+            try
+            {
+                await _rfidScanner.ScanBarcode(Barcode);
+            }
+            catch (Exception e)
+            {
+                _testOutputHelper.WriteLine(e.ToString());
+            }
+        }, cancellationToken);
+    }
+
+    public void Dispose()
+    {
+        _rfidScanner.Dispose();
     }
 }

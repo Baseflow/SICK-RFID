@@ -113,11 +113,6 @@ public class ConnectedSickRfidController : SickRfidControllerState<Connected>, I
 
     public void Dispose()
     {
-        if (_socket == null)
-        {
-            return;
-        }
-
         _socket.Disconnect(true);
         _socket.Close();
         _socket.Dispose();
