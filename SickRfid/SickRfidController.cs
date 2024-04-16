@@ -4,15 +4,11 @@ using System.Text;
 
 namespace SickRfid;
 
-public record Disconnected;
-
-public record Connected;
-
-public abstract class SickRfidControllerState<T>
+public abstract class SickRfidControllerState
 {
 }
 
-public class DisconnectedSickRfidController : SickRfidControllerState<Disconnected>
+public class DisconnectedSickRfidController : SickRfidControllerState
 {
     private readonly IPAddress _ipAddress;
     private readonly int _port;
@@ -31,7 +27,7 @@ public class DisconnectedSickRfidController : SickRfidControllerState<Disconnect
     }
 }
 
-public class ConnectedSickRfidController : SickRfidControllerState<Connected>, IDisposable
+public class ConnectedSickRfidController : SickRfidControllerState, IDisposable
 {
     private readonly Socket _socket;
 
@@ -102,8 +98,6 @@ public class ConnectedSickRfidController : SickRfidControllerState<Connected>, I
                 Console.WriteLine($"Unable to close socket within reasonable timeframe: {e}");
             }
         }
-
-        return string.Empty;
     }
 
     public async Task StopAsync(CancellationToken cancellationToken = default)
