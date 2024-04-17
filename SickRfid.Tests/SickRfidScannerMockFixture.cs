@@ -1,6 +1,6 @@
 namespace SickRfid.Tests;
 
-public class SickRfidScannerMockFixture: IDisposable
+public sealed class SickRfidScannerMockFixture: IDisposable
 {
     internal SickRfidScannerMock Mock { get; private set; }
     

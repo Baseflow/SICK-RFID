@@ -5,7 +5,7 @@ namespace SickRfid.Tests;
 
 using Xunit;
 
-public class Test :  IClassFixture<SickRfidScannerMockFixture>
+public sealed class Test :  IClassFixture<SickRfidScannerMockFixture>, IAsyncDisposable
 {
     private readonly ITestOutputHelper _testOutputHelper;
     private readonly SickRfidScannerMock _rfidScanner;
@@ -41,10 +41,13 @@ public class Test :  IClassFixture<SickRfidScannerMockFixture>
         var controller = new SickRfidControllerBuilder(IPAddress.Parse(IpAddress))
             .WithPort(Port)
             .Build();
+#pragma warning disable REFL039
         Assert.Equal(typeof(DisconnectedSickRfidController), controller.GetType());
 
         using var connectedController = await controller.ConnectAsync();
+
         Assert.Equal(typeof(ConnectedSickRfidController), connectedController.GetType());
+#pragma warning restore REFL039
         
         await connectedController.StartAsync();
         await Task.Delay(TimeSpan.FromSeconds(1));
@@ -57,10 +60,13 @@ public class Test :  IClassFixture<SickRfidScannerMockFixture>
         var controller = new SickRfidControllerBuilder(IPAddress.Parse(IpAddress))
             .WithPort(Port)
             .Build();
+#pragma warning disable REFL039
         Assert.Equal(typeof(DisconnectedSickRfidController), controller.GetType());
         
         using var connectedController = await controller.ConnectAsync();
+
         Assert.Equal(typeof(ConnectedSickRfidController), connectedController.GetType());
+#pragma warning restore REFL039
       
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
         try
@@ -82,11 +88,11 @@ public class Test :  IClassFixture<SickRfidScannerMockFixture>
     {
         return Task.Factory.StartNew(async () =>
         {
-            await Task.Delay(delay, CancellationToken.None);
+            await Task.Delay(delay, CancellationToken.None).ConfigureAwait(false);
             _testOutputHelper.WriteLine("Sending barcode");
             try
             {
-                await _rfidScanner.ScanBarcode(Barcode);
+                await _rfidScanner.ScanRfidAsync(Barcode).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -95,8 +101,10 @@ public class Test :  IClassFixture<SickRfidScannerMockFixture>
         }, cancellationToken);
     }
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
+        // Allow all communication to shutdown in a orderly fashion.
+        await Task.Delay(TimeSpan.FromSeconds(10)).ConfigureAwait(false);
         _rfidScanner.Dispose();
     }
 }

@@ -1,9 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFrameworks>net6.0;net7.0;</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <IsPackable>false</IsPackable>
         <AssemblyName>SickRfid.Tests</AssemblyName>
         <RootNamespace>SickRfid.Tests</RootNamespace>
     </PropertyGroup>
@@ -14,7 +15,11 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
-      <PackageReference Include="xunit" Version="2.7.0" />
+      <PackageReference Include="xunit" Version="2.7.1" />
+      <PackageReference Include="xunit.runner.visualstudio" Version="2.5.8">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
     </ItemGroup>
 
 </Project>

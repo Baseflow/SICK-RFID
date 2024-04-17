@@ -33,7 +33,7 @@ public sealed class SickRfidScannerMock : IDisposable
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        Task.Run(StartListener, cancellationToken);
+        _ = Task.Run(StartListener, cancellationToken);
 
         return Task.CompletedTask;
     }
@@ -89,7 +89,7 @@ public sealed class SickRfidScannerMock : IDisposable
         var state = new StateObject { WorkSocket = handler };
 
         // Begin receiving, then invoke the ReadCallBack method
-        handler.BeginReceive(state.Buffer, 0, StateObject.BufferSize, 0, ReadCallback, state);
+        handler.BeginReceive(state.Buffer, 0, StateObject.BufferSize, SocketFlags.None, ReadCallback, state);
     }
 
     private void ReadCallback(IAsyncResult ar)
@@ -128,7 +128,7 @@ public sealed class SickRfidScannerMock : IDisposable
         {
             // Not all data received. Get more by re-invoking this method.
             if (state?.Buffer is not null)
-                handler.BeginReceive(state.Buffer, 0, StateObject.BufferSize, 0, ReadCallback, state);
+                handler.BeginReceive(state.Buffer, 0, StateObject.BufferSize, SocketFlags.None, ReadCallback, state);
         }
     }
 
@@ -148,9 +148,9 @@ public sealed class SickRfidScannerMock : IDisposable
         }
     }
 
-    public Task ScanBarcode(string barcode)
+    public Task ScanRfidAsync(string rfid)
     {
-        var data = Encoding.ASCII.GetBytes(barcode);
+        var data = Encoding.ASCII.GetBytes(rfid);
         var tasks = new List<Task>();
         lock (_clients)
         {
@@ -165,7 +165,7 @@ public sealed class SickRfidScannerMock : IDisposable
         var byteData = Encoding.ASCII.GetBytes(data);
 
         // Begin sending the data to the remote device and invoke the SendCallback method.
-        handler.BeginSend(byteData, 0, byteData.Length, 0, SendCallback, handler);
+        handler.BeginSend(byteData, 0, byteData.Length, SocketFlags.None, SendCallback, handler);
     }
 
     private void SendCallback(IAsyncResult ar)
@@ -183,7 +183,7 @@ public sealed class SickRfidScannerMock : IDisposable
             var state = new StateObject { WorkSocket = handler };
             if (handler.Connected)
             {
-                handler.BeginReceive(state.Buffer, 0, StateObject.BufferSize, 0, ReadCallback, state);
+                handler.BeginReceive(state.Buffer, 0, StateObject.BufferSize, SocketFlags.None, ReadCallback, state);
             }
         }
         catch (Exception e)
