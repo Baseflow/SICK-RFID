@@ -4,8 +4,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SickRfid", "SickRfid\SickRf
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SickRfid.Tests", "SickRfid.Tests\SickRfid.Tests.csproj", "{A1EDF9BF-CA35-4733-8857-54585EC29A9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SickRfidTestClient", "SickRfidTestClient\SickRfidTestClient.csproj", "{616A2579-E1F3-4029-9D9F-AD26776BFC9D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,9 +18,5 @@ Global
 		{A1EDF9BF-CA35-4733-8857-54585EC29A9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1EDF9BF-CA35-4733-8857-54585EC29A9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1EDF9BF-CA35-4733-8857-54585EC29A9B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{616A2579-E1F3-4029-9D9F-AD26776BFC9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{616A2579-E1F3-4029-9D9F-AD26776BFC9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{616A2579-E1F3-4029-9D9F-AD26776BFC9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{616A2579-E1F3-4029-9D9F-AD26776BFC9D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
