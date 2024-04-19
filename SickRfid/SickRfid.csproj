@@ -24,4 +24,12 @@
         <None Include="images\icon.png" Pack="true" PackagePath="\"/>
         <None Include="$([MSBuild]::GetPathOfFileAbove('README.md', '$(MSBuildThisFileDirectory)../'))" Pack="true" PackagePath="\" />
     </ItemGroup>
+    <ItemGroup>
+      <Content Include="..\.github\dependabot.yml">
+        <Link>.github\dependabot.yml</Link>
+      </Content>
+      <Content Include="..\.github\workflows\BUILD_AND_TEST.yml">
+        <Link>.github\workflows\BUILD_AND_TEST.yml</Link>
+      </Content>
+    </ItemGroup>
 </Project>

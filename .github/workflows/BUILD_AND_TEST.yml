@@ -1,0 +1,23 @@
+name: Build and Unit Test RFID Controller
+
+on:
+  push:
+    branches: [ develop, main ]
+  pull_request:
+    branches: [ develop, main ]
+
+jobs:
+  build_test_dstv_net:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.0.x
+      - name: Restore dependencies
+        run: dotnet restore SickRfid.sln
+      - name: Build
+        run: dotnet build SickRfid.sln --no-restore
+      - name: Test
+        run: dotnet test SickRfid.sln --no-build --verbosity normal
