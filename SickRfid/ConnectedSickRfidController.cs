@@ -82,7 +82,7 @@ public sealed class ConnectedSickRfidController : SickRfidControllerState, IDisp
     /// <exception cref="OperationCanceledException">
     ///     Thrown when no message is received within the timeout.
     /// </exception>
-    public async Task<string> ListenAsync(CancellationToken cancellationToken = default)
+    public async Task<string> ReadAsync(CancellationToken cancellationToken = default)
     {
         if (_socket is null) throw new ConstraintException("Socket is not connected");
         var buffer = new byte[1024];
@@ -124,7 +124,7 @@ public sealed class ConnectedSickRfidController : SickRfidControllerState, IDisp
         try
         {
             await StartAsync(cancellationToken).ConfigureAwait(false);
-            return await ListenAsync(cancellationToken).ConfigureAwait(false);
+            return await ReadAsync(cancellationToken).ConfigureAwait(false);
         }
         catch (Exception e)
         {
