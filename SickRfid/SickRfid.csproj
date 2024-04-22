@@ -31,5 +31,8 @@
       <Content Include="..\.github\workflows\BUILD_AND_TEST.yml">
         <Link>.github\workflows\BUILD_AND_TEST.yml</Link>
       </Content>
+      <Content Include="..\.github\workflows\PUBLISH_PACKAGE.yml">
+        <Link>.github\workflows\PUBLISH_PACKAGE.yml</Link>
+      </Content>
     </ItemGroup>
 </Project>

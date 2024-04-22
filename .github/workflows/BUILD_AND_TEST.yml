@@ -7,7 +7,7 @@ on:
     branches: [ develop, main ]
 
 jobs:
-  build_test_dstv_net:
+  build_test_rfid_controller:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
