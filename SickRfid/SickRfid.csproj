@@ -21,7 +21,7 @@
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
             <_Parameter1>$(AssemblyName).Tests</_Parameter1> <!-- We use the value of AssemblyName to declare the value of the attribute -->
         </AssemblyAttribute>
-        <None Include="images\icon.png" Pack="true" PackagePath="\"/>
+        <None Include="$([MSBuild]::GetPathOfFileAbove('icon.png', '$(MSBuildThisFileDirectory)../'))" Pack="true" PackagePath="\" />
         <None Include="$([MSBuild]::GetPathOfFileAbove('README.md', '$(MSBuildThisFileDirectory)../'))" Pack="true" PackagePath="\" />
     </ItemGroup>
     <ItemGroup>
