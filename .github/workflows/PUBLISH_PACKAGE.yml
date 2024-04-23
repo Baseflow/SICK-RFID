@@ -4,8 +4,9 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'SickRfid/SickRfid.csproj'
+      - 'SickRfid/*'
       - 'Directory.Build.props'
+      - '.github/workflows/PUBLISH_PACKAGE.yml'
 
 jobs:
   build:
