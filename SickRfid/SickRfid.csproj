@@ -3,7 +3,6 @@
     <PropertyGroup>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <PackageId>Baseflow.SICK.RFU610.SDK</PackageId>
         <Version>1.0.0</Version>
         <Authors>Eline Jorritsma, Thomas Luijken</Authors>
         <Company>Baseflow</Company>
