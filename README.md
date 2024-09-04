@@ -14,20 +14,20 @@ Eventually, the we would like to support more features such as writing tags, con
 Installation via Package Manager Console in Visual Studio:
 
 ```powershell
-PM> Install-Package Baseflow.SICK.RFU610.SDK
+PM> Install-Package SickRfid
 ```
 
 Installation via .NET CLI:
 
 ```console
-> dotnet add <TARGET PROJECT> package Baseflow.SICK.RFU610.SDK
+> dotnet add <TARGET PROJECT> package SickRfid
 ```
 
 ## Usage
 The SDK is very easy to use. Here is an example of how to read tags:
 
 ```csharp
-using Baseflow.SICK.RFU610.SDK;
+using SickRfid;
 
 public class Program
 {
@@ -52,7 +52,7 @@ Under the hood, `connectedReader.ScanRfidAsync()` calls three methods itself.
 It is possible to call these methods separately if you need more control over the process:
 
 ```csharp
-using Baseflow.SICK.RFU610.SDK;
+using SickRfid;
 
 public class Program
 {
