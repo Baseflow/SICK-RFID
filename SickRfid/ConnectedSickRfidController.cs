@@ -100,7 +100,7 @@ public sealed class ConnectedSickRfidController : SickRfidControllerState, IDisp
                 var message = Encoding.ASCII.GetString(buffer, 0, result);
                 
                 if (string.IsNullOrEmpty(message) || 
-                    message.Contains(Acknowledgements.ACK_START, StringComparison.Ordinal) ||
+                    message.Equals(Acknowledgements.ACK_START, StringComparison.Ordinal) ||
                     message.Contains(Acknowledgements.ACK_STOP, StringComparison.Ordinal)) continue;
                 
                 return message;
