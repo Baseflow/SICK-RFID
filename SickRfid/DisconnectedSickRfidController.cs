@@ -18,10 +18,10 @@ public sealed class DisconnectedSickRfidController : SickRfidControllerState
         _port = port;
     }
 
-    public async Task<ConnectedSickRfidController> ConnectAsync()
+    public async Task<ConnectedSickRfidController> ConnectAsync(CancellationToken cancellationToken = default)
     {
         var socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
-        await socket.ConnectAsync(_ipAddress, _port).ConfigureAwait(true);
+        await socket.ConnectAsync(_ipAddress, _port, cancellationToken).ConfigureAwait(true);
         return new ConnectedSickRfidController().SetSocket(socket);
     }
 }
