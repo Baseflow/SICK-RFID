@@ -1,6 +1,7 @@
 using System.Data;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SickRfid;
 
@@ -31,6 +32,7 @@ public sealed class ConnectedSickRfidController : SickRfidControllerState, IDisp
         {
             throw new ConstraintException("Cannot assign a socket twice");
         }
+
         _socket = socket;
         return this;
     }
@@ -61,10 +63,11 @@ public sealed class ConnectedSickRfidController : SickRfidControllerState, IDisp
     ///     Thrown when the socket is not connected.
     /// </exception>
     public async Task StartAsync(CancellationToken cancellationToken = default)
-    {        
+    {
         if (_socket is null) throw new ConstraintException("Socket is not connected");
         await _socket.SendAsync(Commands.START_REQUEST_DATA, SocketFlags.None, cancellationToken).ConfigureAwait(true);
     }
+
 
     
     /// <summary>
@@ -85,31 +88,47 @@ public sealed class ConnectedSickRfidController : SickRfidControllerState, IDisp
     public async Task<string> ReadAsync(CancellationToken cancellationToken = default)
     {
         if (_socket is null) throw new ConstraintException("Socket is not connected");
-        var buffer = new byte[1024];
-
+        var bufferSize = 48;
+        
+        FlushSocket(_socket, bufferSize);
+        
+        var buffer = new byte[bufferSize];
         while (true)
         {
             if (cancellationToken.IsCancellationRequested)
             {
                 throw new OperationCanceledException("No message received within timeout");
-            } 
+            }
+
             while (_socket.Available > 0)
             {
-                var result = await _socket.ReceiveAsync(buffer, SocketFlags.None, cancellationToken).ConfigureAwait(false);
+                var result = await _socket.ReceiveAsync(buffer, SocketFlags.None, cancellationToken)
+                    .ConfigureAwait(false);
                 if (result <= 0) continue;
                 var message = Encoding.ASCII.GetString(buffer, 0, result);
 
-                
-                if (string.IsNullOrEmpty(message) || 
-                    message.Equals(Acknowledgements.ACK_START, StringComparison.Ordinal) ||
+                if (string.IsNullOrEmpty(message) ||
+                    message.Contains(Acknowledgements.ACK_START, StringComparison.Ordinal) ||
                     message.Contains(Acknowledgements.ACK_STOP, StringComparison.Ordinal)) continue;
-                
+
                 return message;
             }
         }
     }
-
     
+    private void FlushSocket(Socket socket, int bufferSize)
+    {
+        // Flush the socket before reading incoming data.
+        var buffer = new byte[bufferSize];
+        // As long as data is available, read and discard it
+        while (socket.Available > 0)
+        {
+            socket.Receive(buffer, SocketFlags.None);
+            // Discard the buffer; we don't care about its contents here
+        }
+    }
+
+
     /// <summary>
     ///     Scans a single RFID tag, by combining the start, listen, and stop methods.
     /// </summary>
